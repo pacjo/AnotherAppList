@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Another App List</string>
+    <string name="tile_label">App List tile</string>
+</resources>
