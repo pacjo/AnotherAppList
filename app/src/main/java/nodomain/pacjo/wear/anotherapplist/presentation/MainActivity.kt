@@ -10,34 +10,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.glance.Button
-import androidx.glance.action.Action
-import androidx.glance.action.actionStartActivity
+import androidx.wear.compose.foundation.lazy.AutoCenteringParams
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.Vignette
+import androidx.wear.compose.material.VignettePosition
+import androidx.wear.compose.material.scrollAway
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import nodomain.pacjo.wear.anotherapplist.utils.AppInfo
 import nodomain.pacjo.wear.anotherapplist.utils.getLaunchableApps
@@ -50,21 +44,26 @@ class MainActivity : ComponentActivity() {
             val context = this as Context
             val apps = getLaunchableApps(context.packageManager)
 
-            MaterialTheme {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.background),
-                    verticalArrangement = Arrangement.Center
-                ) {
-//                Text(
-//                    text = "Installed apps",
-//                    style = MaterialTheme.typography.body1,
-//                    textAlign = TextAlign.Center,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
+            val listState = rememberScalingLazyListState()
 
-                    LazyColumn {
+            MaterialTheme {
+                Scaffold(
+                    timeText = {
+                        TimeText(modifier = Modifier.scrollAway(listState))
+                    },
+                    vignette = {
+                        Vignette(vignettePosition = VignettePosition.TopAndBottom)
+                    },
+                    positionIndicator = {
+                        PositionIndicator(scalingLazyListState = listState)
+                    }
+                ) {
+                    ScalingLazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState,
+                        contentPadding = PaddingValues(0.dp),
+                        autoCentering = AutoCenteringParams(0, 1)
+                    ) {
                         items(apps.size) { index ->
                             AppEntry(apps[index], context)
                         }
@@ -92,7 +91,9 @@ fun AppEntry(app: AppInfo, context: Context) {
                 },
                 onLongClick = {
                     saveFavoriteApp(app)
-                    Toast.makeText(context, "marked as favorite",Toast.LENGTH_SHORT).show()
+                    Toast
+                        .makeText(context, "marked as favorite", Toast.LENGTH_SHORT)
+                        .show()
                 }
             )
     ) {
