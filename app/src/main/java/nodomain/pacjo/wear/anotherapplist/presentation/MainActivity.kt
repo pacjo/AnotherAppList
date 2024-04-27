@@ -4,7 +4,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,12 +16,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.AutoCenteringParams
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
+import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.PositionIndicator
@@ -37,6 +42,7 @@ import nodomain.pacjo.wear.anotherapplist.utils.AppInfo
 import nodomain.pacjo.wear.anotherapplist.utils.getLaunchableApps
 import nodomain.pacjo.wear.anotherapplist.utils.saveFavoriteApp
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,35 +50,60 @@ class MainActivity : ComponentActivity() {
             val context = this as Context
             val apps = getLaunchableApps(context.packageManager)
 
-            val listState = rememberScalingLazyListState()
+            val isRoundScreen = context.resources.configuration.isScreenRound
+
+            val listState =
+                if (isRoundScreen)
+                    rememberScalingLazyListState()
+                else
+                    rememberLazyListState()
 
             MaterialTheme {
                 Scaffold(
                     timeText = {
-                        TimeText(modifier = Modifier.scrollAway(listState))
+                        TimeText(
+                            modifier =
+                                if (isRoundScreen)
+                                    Modifier.scrollAway(listState as ScalingLazyListState)
+                                else
+                                    Modifier.scrollAway(listState as LazyListState),
+                        )
                     },
-                    vignette = {
-                        Vignette(vignettePosition = VignettePosition.TopAndBottom)
-                    },
+                    vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
                     positionIndicator = {
-                        PositionIndicator(scalingLazyListState = listState)
+                        if (isRoundScreen) {
+                            PositionIndicator(scalingLazyListState = rememberScalingLazyListState())
+                        } else {
+                            PositionIndicator(lazyListState = rememberLazyListState())
+                        }
                     }
                 ) {
-                    ScalingLazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = listState,
-                        contentPadding = PaddingValues(0.dp),
-                        autoCentering = AutoCenteringParams(0, 1)
-                    ) {
-                        items(apps.size) { index ->
-                            AppEntry(apps[index], context)
+                    if (isRoundScreen) {
+                        ScalingLazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = listState as ScalingLazyListState,
+                            contentPadding = PaddingValues(0.dp),
+                            autoCentering = AutoCenteringParams(0, 1)
+                        ) {
+                            items(apps) { app ->
+                                AppEntry(app, context)
+                            }
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = listState as LazyListState,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            items(apps) { app ->
+                                AppEntry(app, context)
+                            }
                         }
                     }
                 }
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -88,12 +119,6 @@ fun AppEntry(app: AppInfo, context: Context) {
 //                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     context.startActivity(intent)
-                },
-                onLongClick = {
-                    saveFavoriteApp(app)
-                    Toast
-                        .makeText(context, "marked as favorite", Toast.LENGTH_SHORT)
-                        .show()
                 }
             )
     ) {
