@@ -4,7 +4,6 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
 
-<!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -24,20 +23,23 @@
 
         <activity
             android:name=".presentation.MainActivity"
-            android:excludeFromRecents="true"
             android:exported="true"
+            android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.DeviceDefault">
+
+            <!-- make available as tile configuration activity -->
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="MainActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.google.android.clockwork.tiles.category.PROVIDER_CONFIG" />
             </intent-filter>
         </activity>
 
         <service
-            android:name=".tile.ShortcutsTileService"
-            android:exported="true"
+            android:name=".tile.LauncherTileService"
             android:label="@string/tile_label"
+            android:exported="true"
             android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
             <intent-filter>
                 <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
@@ -46,6 +48,10 @@
             <meta-data
                 android:name="androidx.wear.tiles.PREVIEW"
                 android:resource="@drawable/tile_preview" />
+
+            <meta-data
+                android:name="com.google.android.clockwork.tiles.PROVIDER_CONFIG_ACTION"
+                android:value="MainActivity" />
         </service>
 
         <!-- <service -->
