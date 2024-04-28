@@ -87,8 +87,6 @@ fun DynamicWearScaffold(
 fun RectangularListScaffold(content: LazyListScope.() -> Unit) {
     val listState = rememberLazyListState()
 
-    // TODO: fix broken timeText
-
     Scaffold(
         timeText = { TimeText(modifier = Modifier.scrollAway(listState)) },
         vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
@@ -97,7 +95,7 @@ fun RectangularListScaffold(content: LazyListScope.() -> Unit) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = listState,
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(top = 12.dp)
         ) {
             content()
         }
