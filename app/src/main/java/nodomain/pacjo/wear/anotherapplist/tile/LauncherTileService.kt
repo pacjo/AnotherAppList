@@ -1,6 +1,7 @@
 package nodomain.pacjo.wear.anotherapplist.tile
 
 import android.content.ComponentName
+import android.content.Context
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,12 @@ import nodomain.pacjo.wear.anotherapplist.utils.getFavoriteApp
 
 class LauncherTileService : GlanceTileService() {
 
+    companion object {
+        fun forceTileUpdate(applicationContext: Context) {
+            getUpdater(applicationContext).requestUpdate(LauncherTileService::class.java)
+        }
+    }
+
     @Composable
     @GlanceComposable
     override fun Content() {
@@ -66,28 +73,43 @@ class LauncherTileService : GlanceTileService() {
             }
         }
 
-        // TODO: fix layout when 3 apps are selected
-
         Column(
             modifier = GlanceModifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (favoriteApps.isNotEmpty()) {
-                Column {
+            when (favoriteApps.size) {
+                in 1..3 -> {
                     Row (
-                        modifier = GlanceModifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        for (app in favoriteApps.subList(0, 2)) {
+                        for (app in favoriteApps) {
                             ActionButton(app)
                         }
                     }
-
-                    if (favoriteApps.size > 2) {
-                        Row (
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                }
+                4 -> {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ActionButton(favoriteApps[0])
+                        Row {
+                            for (app in favoriteApps.subList(1, favoriteApps.size)) {
+                                ActionButton(app)
+                            }
+                        }
+                    }
+                }
+                5 -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row {
+                            for (app in favoriteApps.subList(0, 2)) {
+                                ActionButton(app)
+                            }
+                        }
+                        Row {
                             for (app in favoriteApps.subList(2, favoriteApps.size)) {
                                 ActionButton(app)
                             }

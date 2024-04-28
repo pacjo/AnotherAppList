@@ -34,6 +34,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.fillMaxRectangle
 import com.google.android.horologist.compose.material.Chip
 import nodomain.pacjo.wear.anotherapplist.R
+import nodomain.pacjo.wear.anotherapplist.tile.LauncherTileService
 import nodomain.pacjo.wear.anotherapplist.utils.AppInfo
 import nodomain.pacjo.wear.anotherapplist.utils.getFavoriteApp
 import nodomain.pacjo.wear.anotherapplist.utils.getLaunchableApps
@@ -217,9 +218,8 @@ fun selectionChangeHelper(context: Context, navController: NavController, data: 
     SettingsActivity.currentAppKey = null
     navController.popBackStack()
 
-    // dispatch job to update tile
-    // TODO: fix tile updates after action
-//    CoroutineScope(Dispatchers.IO).launch {
-//        LauncherTileService().updateTileState {}
-//    }
+    // update tile state
+    // stolen from: https://github.com/yschimke/rememberwear/blob/9071a47b9b8b753b457fe02a208efbbddf2d9849/wear/src/main/kotlin/com/google/wear/soyted/tile/RememberWearTileProviderService.kt#L93
+    LauncherTileService.forceTileUpdate(context)
+
 }

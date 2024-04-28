@@ -95,7 +95,7 @@ fun RectangularListScaffold(content: LazyListScope.() -> Unit) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = listState,
-            contentPadding = PaddingValues(top = 12.dp)
+            contentPadding = PaddingValues(top = 20.dp)
         ) {
             content()
         }
