@@ -47,7 +47,3 @@ fun getLaunchableApps(packageManager: PackageManager): List<AppInfo> {
 
     return launchableApps
 }
-
-fun saveFavoriteApp(app: AppInfo) {
-    return
-}

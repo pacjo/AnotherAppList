@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Another App List</string>
     <string name="tile_label">App List tile</string>
+
+    <string name="open_app_list">Open\napp list</string>
 </resources>

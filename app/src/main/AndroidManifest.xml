@@ -27,10 +27,18 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:theme="@android:style/Theme.DeviceDefault">
+        </activity>
+
+        <activity
+            android:name=".presentation.SettingsActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.DeviceDefault">
 
             <!-- make available as tile configuration activity -->
             <intent-filter>
-                <action android:name="MainActivity" />
+                <action android:name="SettingsActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.google.android.clockwork.tiles.category.PROVIDER_CONFIG" />
             </intent-filter>
@@ -51,7 +59,7 @@
 
             <meta-data
                 android:name="com.google.android.clockwork.tiles.PROVIDER_CONFIG_ACTION"
-                android:value="MainActivity" />
+                android:value="SettingsActivity" />
         </service>
 
         <!-- <service -->

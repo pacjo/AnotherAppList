@@ -58,4 +58,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.glance:glance-wear-tiles:1.0.0-alpha05")
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("androidx.wear.compose:compose-navigation:1.3.1")
+    implementation("com.google.android.horologist:horologist-compose-material:0.6.9")
+
+    "baselineProfile"(project(":app:baselineprofile"))
 }
