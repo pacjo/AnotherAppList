@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,11 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -35,7 +30,9 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
+import com.google.android.horologist.compose.layout.fillMaxRectangle
 import com.google.android.horologist.compose.material.Chip
+import nodomain.pacjo.wear.anotherapplist.R
 import nodomain.pacjo.wear.anotherapplist.utils.AppInfo
 import nodomain.pacjo.wear.anotherapplist.utils.getFavoriteApp
 import nodomain.pacjo.wear.anotherapplist.utils.getLaunchableApps
@@ -72,6 +69,7 @@ class SettingsActivity : ComponentActivity() {
                 composable("settings_main") {
                     MaterialTheme {
                         // TODO: we really need to fix this duplication, it hurts
+                        // also TODO: allow forcing custom list implementation, since we removed that tile
                         DynamicWearScaffold(
                             context = context,
                             roundContent = {
@@ -84,7 +82,7 @@ class SettingsActivity : ComponentActivity() {
                                             vertical = 4.dp
                                         ),
                                         label = "App ${appKeys.indexOf(key) + 1}",
-                                        secondaryLabel = app?.activityLabel ?: "Tap to select",
+                                        secondaryLabel = app?.activityLabel ?: context.getString(R.string.tap_to_select),
                                         icon = {
                                             if (app != null) {
                                                 Image(
@@ -111,7 +109,7 @@ class SettingsActivity : ComponentActivity() {
                                             vertical = 4.dp
                                         ),
                                         label = "App ${appKeys.indexOf(key) + 1}",
-                                        secondaryLabel = app?.activityLabel ?: "Tap to select",
+                                        secondaryLabel = app?.activityLabel ?: context.getString(R.string.tap_to_select),
                                         icon = {
                                             if (app != null) {
                                                 Image(
@@ -149,9 +147,7 @@ class SettingsActivity : ComponentActivity() {
                         roundContent = {
                             // remove selection button
                             item {
-                                SpecialActionChip(
-                                    "Remove current selection"     // TODO: make string resource
-                                ) {
+                                SpecialActionChip(context.getString(R.string.remove_selection)) {
                                     selectionChangeHelper(context, navController, null)
                                 }
                             }
@@ -163,9 +159,7 @@ class SettingsActivity : ComponentActivity() {
                         },
                         rectangularContent = {
                             item {
-                                SpecialActionChip(
-                                    "Remove current selection"     // TODO: make string resource
-                                ) {
+                                SpecialActionChip(context.getString(R.string.remove_selection)) {
                                     selectionChangeHelper(context, navController, null)
                                 }
                             }
@@ -182,25 +176,15 @@ class SettingsActivity : ComponentActivity() {
     }
 }
 
-// TODO: check on round screen
 @Composable
 fun InfoScreen(onClick: () -> Unit) {
     Column (
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxRectangle(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            buildAnnotatedString {
-                append("App list will be shown, ")
-
-                withStyle(
-                    style = SpanStyle(fontWeight = FontWeight.Bold)
-                ) {
-                    append("press and hold an entry to select it")
-                }
-                append(", you can try it before selecting just by clicking it.")
-            },
+            text = R.string.info_screen_text.toString(),
             textAlign = TextAlign.Center
         )
 
@@ -219,7 +203,8 @@ fun InfoScreen(onClick: () -> Unit) {
 fun SpecialActionChip(text: String, onClick: () -> Unit) {
     Chip(
         label = text,
-        onClick = onClick
+        onClick = onClick,
+        modifier = Modifier.padding(horizontal = 8.dp)
     )
 }
 

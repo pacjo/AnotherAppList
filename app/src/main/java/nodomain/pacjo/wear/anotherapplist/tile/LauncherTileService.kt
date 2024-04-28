@@ -96,7 +96,7 @@ class LauncherTileService : GlanceTileService() {
                 }
             }
 
-            Spacer(GlanceModifier.height(12.dp))
+            Spacer(GlanceModifier.height(6.dp))
 
             Button(
                 text = LocalContext.current.getString(R.string.open_app_list),
