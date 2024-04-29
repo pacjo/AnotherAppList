@@ -3,7 +3,8 @@
     <string name="tile_label">App List tile</string>
 
     <string name="open_app_list">Open\napp list</string>
-    <string name="remove_selection">Remove current selection</string>
     <string name="tap_to_select">Tap to select</string>
+    <string name="remove_selection">Remove current selection</string>
+    <string name="use_custom_list">Force usage of a custom app list</string>
     <string name="info_screen_text">App list will be shown, <b>press and hold an entry to select it</b>, you can try it before selecting just by clicking it.</string>
 </resources>

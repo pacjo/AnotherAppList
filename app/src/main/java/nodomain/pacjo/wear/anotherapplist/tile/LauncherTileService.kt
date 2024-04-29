@@ -31,6 +31,7 @@ import nodomain.pacjo.wear.anotherapplist.R
 import nodomain.pacjo.wear.anotherapplist.presentation.MainActivity
 import nodomain.pacjo.wear.anotherapplist.presentation.dataStore
 import nodomain.pacjo.wear.anotherapplist.utils.AppInfo
+import nodomain.pacjo.wear.anotherapplist.utils.getBoolToDataStore
 import nodomain.pacjo.wear.anotherapplist.utils.getFavoriteApp
 
 class LauncherTileService : GlanceTileService() {
@@ -44,10 +45,13 @@ class LauncherTileService : GlanceTileService() {
     @Composable
     @GlanceComposable
     override fun Content() {
+        val forceCustomList = getBoolToDataStore(dataStore, "force_custom_list") ?: false
+
         val manufacturer = Build.MANUFACTURER
         val model = Build.MODEL
 
         val clickAction = when {
+            forceCustomList -> actionStartActivity(MainActivity::class.java)
             manufacturer.equals("OPPO", ignoreCase = true) && model.contains("watch", ignoreCase = true) ->
                 actionStartActivity(
                     ComponentName("com.heytap.wearable.launcher", "com.heytap.wearable.launcher.Launcher")
